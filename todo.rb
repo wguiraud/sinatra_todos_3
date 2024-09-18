@@ -17,7 +17,7 @@ get "/" do
 end
 
 get "/lists" do 
-  @lists = session[:lists] #By default, the session hash should reference an empty array if no lists have been created yet. If not the call to Enumerator#each occuring in the lists.erb view template will raise a NoMethodError!
+  @lists = session[:lists] 
   erb :lists
 end
 
@@ -28,4 +28,6 @@ end
 post "/lists" do
   list_name = params[:list_name]
   session[:lists] << { name: list_name, todos: [] }
+  session[:success] = "#{list_name} was successfully created"
+  redirect "/lists"
 end
