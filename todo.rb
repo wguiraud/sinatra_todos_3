@@ -2,6 +2,7 @@
 
 require 'sinatra'
 require 'sinatra/reloader'
+require 'sinatra/content_for'
 require 'tilt/erubis'
 require 'pry'
 
@@ -58,3 +59,11 @@ post '/lists' do
     redirect '/lists'
   end
 end
+
+get "/lists/:list_id" do 
+  list_index = params[:list_id].to_i
+  list = session[:lists][list_index]
+  @list_name = list[:name] 
+  @list_todos = list[:todos]
+  erb :list
+end 
