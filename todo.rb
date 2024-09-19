@@ -25,9 +25,9 @@ end
 
 def error_for_list_name(list_name)
   if invalid_list_name?(list_name)
-    "Please enter a valid input. The input must be between 1 and 100 characters long and contain only alphanumeric and common punctuation characters."
+    "Please enter a valid list name." 
   elsif non_unique_name?(list_name) 
-    "Sorry, this list name is already used!"
+    "Sorry, this list name is already being used."
   else 
     nil
   end
