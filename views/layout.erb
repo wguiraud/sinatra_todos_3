@@ -11,6 +11,32 @@
     <header>
       <h1>Todo Tracker</h1>
     </header>
+
+    <% if session[:success] %>
+      <div class="flash success" id="flash-message">
+        <p><%= session.delete(:success)  %></p>
+      </div>
+
+      <script type="text/javascript">
+        setTimeout(function() {
+          document.getElementById('flash-message').style.display = 'none';
+        }, 3000); // 3000 milliseconds = 3 seconds
+      </script>
+    
+    <% elsif session[:error] %>
+     <div class="flash error" id="flash-message">
+       <p><%= session.delete(:error)  %></p>
+     </div>
+
+     <script type="text/javascript">
+       setTimeout(function() {
+         document.getElementById('flash-message').style.display = 'none';
+       }, 6000); // 6000 milliseconds = 6 seconds
+      </script>
+
+    <% end %>
+
+
     <main>
       <%= yield %>
     </main>
