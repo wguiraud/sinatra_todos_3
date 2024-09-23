@@ -47,7 +47,22 @@ get '/lists/new' do
   erb :new_list
 end
 
-post '/lists' do
+post "/lists/:list_id" do 
+  list_name = params[:list_name].strip
+  list_id = params[:list_id].to_i
+  @list = session[:lists][list_id]
+  error = error_for_list_name(list_name)
+  if error 
+    session[:error] = error
+    erb :edit_list
+  else
+    @list[:name] = list_name 
+    session[:success] = "The list was successfully updated!"
+    redirect "/lists/#{list_id}"
+  end
+end
+
+post "/lists" do
   list_name = params[:list_name].strip
   error = error_for_list_name(list_name)
   if error
@@ -60,10 +75,19 @@ post '/lists' do
   end
 end
 
+get "/lists/:list_id/edit" do 
+  list_id = params[:list_id].to_i
+  @list = session[:lists][list_id]
+  erb :edit_list
+end
+
+
 get "/lists/:list_id" do 
-  list_index = params[:list_id].to_i
-  list = session[:lists][list_index]
+  @list_id = params[:list_id].to_i
+  list = session[:lists][@list_id]
   @list_name = list[:name] 
   @list_todos = list[:todos]
   erb :list
 end 
+
+
