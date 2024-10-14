@@ -19,7 +19,7 @@ body > header h1 {
   display: inline-block;
   width: 38%;
   font-size: 30px;
-  color: #dd5f4f; 
+  color: #dd5f4f;
 }
 
 body > header .actions {
@@ -35,7 +35,7 @@ body > header .actions a {
 }
 
 body > header .actions a:hover {
-  color: #dd5f4f; 
+  color: #dd5f4f;
 }
 
 body > header .actions a.add:before {

@@ -44,17 +44,21 @@ get '/' do
   redirect '/lists'
 end
 
+# renders all the lists
 get '/lists' do
   @lists = session[:lists]
   erb :lists
 end
 
+# renders the new list page
 get '/lists/new' do
   erb :new_list
 end
 
+# creates a new list
 post "/lists" do
   list_name = params[:list_name].strip
+
   error = error_for_list_name(list_name)
   if error
     session[:error] = error
@@ -66,29 +70,29 @@ post "/lists" do
   end
 end
 
+# renders a list
 get "/lists/:list_id" do
-  ### Using instance variables to pass data to the templates
-  # @list_id = params[:list_id].to_i
-  # @list = session[:lists][@list_id]
-  # @list_name = @list[:name]
-  ### Using a hash of local variables in conjunction with the locals option to pass data down to the templates
   list_id = params[:list_id].to_i
   list = session[:lists][list_id]
   list_name = list[:name]
+
   erb :list, locals: { list_id: list_id, list: list, list_name: list_name }
-  #erb :list
 end
 
+# edits a list name
 get "/lists/:list_id/edit" do 
   @list_id = params[:list_id].to_i
   @list = session[:lists][@list_id]
+
   erb :edit_list
 end
 
+# updates an existing list name
 post "/lists/:list_id" do 
   list_name = params[:list_name].strip
   list_id = params[:list_id].to_i
   @list = session[:lists][list_id]
+
   error = error_for_list_name(list_name)
   if error 
     session[:error] = error
@@ -100,41 +104,69 @@ post "/lists/:list_id" do
   end
 end
 
+# deletes a list
 post "/lists/:list_id/delete" do 
   list_id = params[:list_id].to_i
   list_name = session[:lists][list_id][:name]
+
   session[:lists].delete_at(list_id)
-  session[:success] = "#{list_name} was successfully deleted"
+  session[:success] = "#{list_name} list was successfully deleted"
+
   redirect "/lists"
 end
 
+# creates a new todo
 post "/lists/:list_id/todos" do
-  #Using instance variables to pass data to the templates
-#  @list_id = params[:list_id].to_i
-#  todo_name = params[:todo_name].strip
-#  @list = session[:lists][@list_id]
-#  @list_name = @list[:name]
-  # Using a hash of local variables in conjunction with the locals option to
-  # pass data down to the templates
   list_id = params[:list_id].to_i
   list = session[:lists][list_id]
   list_name = list[:name]
 
   todo_name = params[:todo_name].strip
 
-
-
-    error = error_for_todo_name(todo_name)
+  error = error_for_todo_name(todo_name)
   if error
     session[:error] = error
     erb :list, locals: { list_id: list_id, list: list, list_name: list_name }
-    #erb :list
   else
-    #@list[:todos] << { name: todo_name, completed: false }
     list[:todos] << { name: todo_name, completed: false }
     session[:success] = "The todo was successfully created!"
     redirect "/lists/#{list_id}"
   end
+
 end
 
+# deletes a todo from a list
+post "/lists/:list_id/todos/:todo_id/delete" do
+  list_id = params[:list_id].to_i
+  list = session[:lists][list_id]
+  todo_id = params[:todo_id].to_i
+  todo_name = list[:todos][todo_id][:name]
 
+  list[:todos].delete_at(todo_id)
+  session[:success] = "#{todo_name} todo has been deleted successfully!"
+  redirect "/lists/#{list_id}"
+end
+
+# marking a todo as completed
+post "/lists/:list_id/todos/:todo_id" do
+  list_id = params[:list_id].to_i
+  list = session[:lists][list_id]
+  todo_id = params[:todo_id].to_i
+  todo_name = list[:todos][todo_id][:name]
+
+  is_completed = params[:completed] == 'true'
+  list[:todos][todo_id][:completed] = is_completed
+  session[:success] = "#{todo_name} has been updated"
+
+  redirect "/lists/#{list_id}"
+end
+
+post "/lists/:list_id/complete_all" do
+  list_id = params[:list_id].to_i
+  list = session[:lists][list_id]
+  list[:todos].each { |todo| todo[:completed] = true }
+
+  session[:success] = "All the todos are completed"
+
+  redirect "/lists/#{list_id}"
+end
