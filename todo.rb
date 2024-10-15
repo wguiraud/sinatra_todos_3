@@ -12,6 +12,24 @@ configure do
   # set :session_secret, SecureRandom.hex(32)
 end
 
+helpers do 
+  def list_complete?(list)
+    total_todos_count(list) > 0 && uncompleted_todos_count(list) == 0
+  end
+
+  def list_class(list)
+    "complete" if list_complete?(list)
+  end
+
+  def uncompleted_todos_count(list)
+    list[:todos].reject { |todo| todo[:completed] }.size
+  end
+
+  def total_todos_count(list)
+    list[:todos].size
+  end
+end
+
 def non_unique_name?(given_list_name)
   used_names = []
   session[:lists].each { |list| used_names << list[:name] }
@@ -81,8 +99,8 @@ end
 
 # edits a list name
 get "/lists/:list_id/edit" do 
-  @list_id = params[:list_id].to_i
-  @list = session[:lists][@list_id]
+  list_id = params[:list_id].to_i
+  @list = session[:lists][list_id]
 
   erb :edit_list
 end
@@ -161,6 +179,7 @@ post "/lists/:list_id/todos/:todo_id" do
   redirect "/lists/#{list_id}"
 end
 
+# marking all todos as completed
 post "/lists/:list_id/complete_all" do
   list_id = params[:list_id].to_i
   list = session[:lists][list_id]

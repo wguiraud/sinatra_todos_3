@@ -1,6 +1,7 @@
-<section id="todos">
+<section class="<%= list_class(list) %>" id="todos">
   <header>
     <h2><%= list_name %></h2>
+
     <ul>
       <li>
        <form action="/lists/<%= list_id %>/complete_all" method="post">
