@@ -1,5 +1,5 @@
 <ul id="lists">
-  <% uncompleted_completed_list(@lists).each do |list, idx| %>
+  <% uncompleted_completed_lists(@lists) do |list, idx| %>
       <li class="<%= list_class(list) %>">
       <a href="/lists/<%= idx %>">
         <h2><%= list[:name] %></h2>

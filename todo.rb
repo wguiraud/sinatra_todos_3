@@ -29,23 +29,35 @@ helpers do
     list[:todos].size
   end
 
-  def uncompleted_completed_list(list)
-    #my first attempt
-    completed, uncompleted = [], []
+  def uncompleted_completed_lists(lists, &block)
+    completed, uncompleted = {}, {}
 
-    list.each_with_index do |l, idx|
-      if list_complete?(l)
-        l[:index] = idx
-        completed << l
-      elsif !list_complete?(l)
-        l[:index] = idx
-        uncompleted << l
+    lists.each_with_index do |list, idx|
+      if list_complete?(list)
+        completed[idx] = list
+      else
+        uncompleted[idx] = list
       end
     end
 
-    uncompleted + completed
-
+    uncompleted.each {|idx, list| yield list, idx }
+    completed.each { |idx, list| yield list, idx }
   end
+    #    completed, uncompleted = [], []
+#
+#    list.each_with_index do |l, idx|
+#      if list_complete?(l)
+#        l[:index] = idx
+#        completed << l
+#      elsif !list_complete?(l)
+#        l[:index] = idx
+#        uncompleted << l
+#      end
+#    end
+#
+#    uncompleted + completed
+#
+#  end
 end
 
 def non_unique_name?(given_list_name)
