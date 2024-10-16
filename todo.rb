@@ -35,15 +35,21 @@ helpers do
     lists.each_with_index do |list, idx|
       if list_complete?(list)
         completed[idx] = list
+        #completed[list] = idx
       else
         uncompleted[idx] = list
+        #uncompleted[list] = idx
       end
     end
 
     uncompleted.each {|idx, list| yield list, idx }
+    #uncompleted.each(&block)
     completed.each { |idx, list| yield list, idx }
+    #completed.each(&block)
   end
+  #my first attempt
     #    completed, uncompleted = [], []
+  #
 #
 #    list.each_with_index do |l, idx|
 #      if list_complete?(l)
