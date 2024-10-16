@@ -28,6 +28,24 @@ helpers do
   def total_todos_count(list)
     list[:todos].size
   end
+
+  def uncompleted_completed_list(list)
+    #my first attempt
+    completed, uncompleted = [], []
+
+    list.each_with_index do |l, idx|
+      if list_complete?(l)
+        l[:index] = idx
+        completed << l
+      elsif !list_complete?(l)
+        l[:index] = idx
+        uncompleted << l
+      end
+    end
+
+    uncompleted + completed
+
+  end
 end
 
 def non_unique_name?(given_list_name)
@@ -185,7 +203,11 @@ post "/lists/:list_id/complete_all" do
   list = session[:lists][list_id]
   list[:todos].each { |todo| todo[:completed] = true }
 
-  session[:success] = "All the todos are completed"
+  if list[:todos].size == 0
+    session[:error] = "You don't have any todo for this list yet!"
+  elsif list[:todos].size > 0
+    session[:success] = "All the todos are completed"
+  end
 
   redirect "/lists/#{list_id}"
 end
