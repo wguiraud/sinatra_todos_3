@@ -64,6 +64,20 @@ helpers do
 #    uncompleted + completed
 #
 #  end
+  def uncompleted_completed_todos(todos_list, &block)
+    completed, uncompleted = {},{}
+
+    todos_list.each_with_index do |todo, idx|
+      if todo[:completed] == true
+        completed[todo] = idx
+      else
+        uncompleted[todo] = idx
+      end
+    end
+
+    uncompleted.each(&block)
+    completed.each(&block)
+  end
 end
 
 def non_unique_name?(given_list_name)

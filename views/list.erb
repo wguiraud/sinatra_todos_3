@@ -16,7 +16,7 @@
   </header>
 
   <ul>
-    <% list[:todos].each_with_index do |todo, idx| %>
+    <% uncompleted_completed_todos(list[:todos]) do |todo, idx| %>
       <% if todo[:completed] %>
         <li class="complete">
       <% else %>
