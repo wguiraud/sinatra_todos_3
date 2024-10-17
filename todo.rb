@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'sinatra'
-require 'sinatra/reloader'
+require 'sinatra/reloader' if development?
 require 'sinatra/content_for'
 require 'tilt/erubis'
-require 'pry'
+#require 'pry'
 
 configure do
   enable :sessions
@@ -30,53 +30,17 @@ helpers do
   end
 
   def uncompleted_completed_lists(lists, &block)
-    completed, uncompleted = {}, {}
+    completed, uncompleted = lists.partition { |list| list_complete?(list) }
 
-    lists.each_with_index do |list, idx|
-      if list_complete?(list)
-        completed[idx] = list
-        #completed[list] = idx
-      else
-        uncompleted[idx] = list
-        #uncompleted[list] = idx
-      end
-    end
-
-    uncompleted.each {|idx, list| yield list, idx }
-    #uncompleted.each(&block)
-    completed.each { |idx, list| yield list, idx }
-    #completed.each(&block)
+    uncompleted.each { |list| yield list, lists.index(list) }
+    completed.each { |list| yield list, lists.index(list) }
   end
-  #my first attempt
-    #    completed, uncompleted = [], []
-  #
-#
-#    list.each_with_index do |l, idx|
-#      if list_complete?(l)
-#        l[:index] = idx
-#        completed << l
-#      elsif !list_complete?(l)
-#        l[:index] = idx
-#        uncompleted << l
-#      end
-#    end
-#
-#    uncompleted + completed
-#
-#  end
+
   def uncompleted_completed_todos(todos_list, &block)
-    completed, uncompleted = {},{}
+    completed, uncompleted = todos_list.partition { |todo| todo[:completed] }
 
-    todos_list.each_with_index do |todo, idx|
-      if todo[:completed] == true
-        completed[todo] = idx
-      else
-        uncompleted[todo] = idx
-      end
-    end
-
-    uncompleted.each(&block)
-    completed.each(&block)
+    uncompleted.each { |todo| yield todo, todos_list.index(todo) }
+    completed.each { |todo| yield todo, todos_list.index(todo) }
   end
 end
 
