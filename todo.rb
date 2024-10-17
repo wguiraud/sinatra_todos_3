@@ -10,6 +10,7 @@ configure do
   enable :sessions
   set :session_secret, 'hello world I need a 64 bytes session password in order to make sinatra happy' # ok for development env but not ok for production
   # set :session_secret, SecureRandom.hex(32)
+  set :erb, :escape_html => true
 end
 
 helpers do 
